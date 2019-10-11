@@ -49,13 +49,32 @@ Cells 2.0 does not have any new parameters for installation, and the required co
 
 On a fresh install, the "Personal Files" workspace will be sync-enabled by default. If you are upgrading, make sure to enable one of your workspaces to allow synchronization, otherwise you will not see any resources when browsing the server from within Cells Sync. 
 
+##### In-App Update
+
+Update can be performed from a running Cells 1.X by using the in-app update tool. Just switch the update config to the `dev` channel and click refresh to see the new version appear, perform the update and restart. You should be good to go.
+
+##### Fresh Install
+
+Binaries are available for all OS on our download server : 
+
+Linux: https://download.pydio.com/pub/cells/release/2.0.0-rc1/linux-amd64/cells
+
+MacOSX: https://download.pydio.com/pub/cells/release/2.0.0-rc1/darwin-amd64/cells
+
+Windows : https://download.pydio.com/pub/cells/release/2.0.0-rc1/windows-amd64/cells.exe
+
 ### CellsSync
 
 CellsSync is available for Windows, MacOS and Linux with installers in the following formats
 
 - **Windows signed MSI** : will install cells-sync.exe in your local Program Files. Switching on the "Run At Startup" configuration should create a "*.lnk*" shortcut inside the Windows Start Up menu.
+  Download URL : https://download.pydio.com/pub/cells-sync/release/0.8.0/windows-amd64/CellsSync-0.8.0.msi
+
 - **MacOS signed DMG** provides a drag'n'drop Finder window for installing cells-sync in your Applications folder. Switching on the "Run At Startup" should install CellsSync as a *launchd service* in the user scope (under `~/Library/LaunchAgents`)
-- **Linux SNAP package** : The "Run At Startup" option is ubuntu-specific and installs "*.desktop*" shortcuts in the required locations.
+  Download URL : https://download.pydio.com/pub/cells-sync/release/0.8.0/darwin-amd64/CellsSync-0.8.0.dmg
+
+- **Linux Binary**  : The "Run At Startup" option is ubuntu-specific and installs "*.desktop*" shortcuts in the required locations. We are working on providing a SNAP for installing more easily no desktop-enable linux distributions.
+  Download URL : https://download.pydio.com/pub/cells-sync/release/0.8.0/linux-amd64/cells-sync
 
 Once installed, you should find a new icon in your Systrem Tray. 
 
@@ -73,15 +92,9 @@ Select the target Path for the local folder (a default location should be create
 
 ------
 
-## C - Known Issues
+## C - CellsSync Known Issues
 
-### Cells Server
-
-- After a web-based installation and a restart of the server, sometimes you may have an **hydra**-related error. This is linked to the new component added to provide OIDC SSO from within Cells. If that case happens, log in to your database and empty the table hydra_jwk with `truncate table hydra_jwk;` and restart. This should solve the issue.
-
-### CellsSync
-
-- The "run at start" mechanisms may not be very stable yet on MacOS
+- On MacOS, once enabled, you cannot disable the "Run At Startup" option from the app. You have to remove the service by running `/Applications/CellsSync/Contents/MacOS/cells-sync service uninstall`command.
 - Conflicts (parallel modifications of a same file on both endpoints) may still be buggy
 - The "Stop" button is sometimes not working as it should
 - MacOS ".keynote" files may be buggy as well, especially if you are migrating them from an old version of Keynote (stored as a folder) to a newer version (stored as file). Saving the file to a new name should make the process easier.
