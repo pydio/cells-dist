@@ -21,18 +21,23 @@ Below are the most important ones :
 - **The "Sync" library**, that was used inside DataSources to mirror the *object service* modifications to the *index service* of each datasource was fully rewritten. This same library is used for server-to-desktop synchronization, and can even be used in other interesting scenariis : server-side folder-to-folder sync (directly through datasources), server-to-s3 storage sync (for realtime or scheduled backups), etc. 
 - **The Authentication brick**, originaly based on Open ID Connect, has been greatly rethought to allow external applications to use the server as a standard OIDC Identity Provider. Typically, adding an account inside CellsSync opens a common OAuth2 workflow by opening the server login page and getting a token back to the application. CellsSync does not know anything about users credentials locally.
 
-### Important! New gRPC gateway requirements
+### Readme first : new gRPC gateway requirements
 
-For best performances and real-time events, CellsSync communicates with the server using a gRPC connection. gRPC is an HTTP/2 protocol, and was already used internally for service-to-service communication. A new dedicated service (*pydio.gateway.grpc*) now proxies external gRPC calls to internal services. This new feature implies that **HTTP/2 must be enabled on the bind address facing the outside world**.
+For best performances and real-time events, **CellsSync** communicates with the server using a gRPC connection. gRPC is an **HTTP/2** protocol, which implies that **HTTP/2 must be enabled on the bind address facing the outside world**.
 
-At the time being, this is managed differently depending on your Cells Server SSL configuration and reverse-proxy usage. A "SSL Enabled" configuration means SSL is enabled either with your own Cert/Key couple, via Let's Encrypt, or using a self-signed config (see note below). Clear Http will require more work:
+If you are behind a proxy or inside a private network, you may have to check your proxy settings: 
 
-- **[SSL Enabled]** Cells internal proxy will serve HTTP/1.1 and HTTP/2 on the same port, the one you define for external url (e.g; 443, or 8080 or anything you choose). You don't have to open any other port in your firewall.
+- **[SSL Enabled]**  Cert/Key couple, Let's Encrypt, Self-signed config (see note below)
+  
+  Cells will serve HTTP/1.1 and HTTP/2 on the same port, the one you define for external url (e.g; 443, or 8080 or anything you choose). You don't have to open any other port in your firewall.
+  
   - **[No Proxy]** Your Cells is directly facing the outside world with a proper SSL configuration, everything should be working out of the box
-  - **[Proxy]** Make sure your proxy is HTTP/2 enabled. If Cells using self-signed configuration (see note below), you can either install the generated rootCA.pem on the proxy machine, or simply configure the proxy to SkipVerify (for example insecure_skip_verify on Caddy).
-- **[No SSL]** Cells cannot serve HTTP/1.1 and HTTP/2 on the same port: service *pydio.gateway.grpc* will be directly connected to. By default, it picks a randomly available port and advertises it in the /a/config/discovery API. The CellsSync client will automagically query this API to connect. 
+  - **[Proxy]** Just make sure your proxy is HTTP/2 enabled. If Cells using self-signed configuration (see note below), you can either install the generated rootCA.pem on the proxy machine, or configure the proxy to SkipVerify (for example *insecure_skip_verify* on Caddy).
+  
+- **[No SSL]** Cells will serve HTTP/1.1 and HTTP/2 on two different ports. By default, gRPC will pick a randomly available port and advertise it in the /a/config/discovery API. The CellsSync client will automagically query this API to connect. 
+  
   - **[No firewall, No Proxy]** If you are on a local machine with all ports open, this should work out of the box.
-  - **[Firewall and/or Proxy]** You will have to make proper configuration to open and forward the HTTP/2 on this port. To avoid using a random port at each restart, you can fix this port by using the **PYDIO_GRPC_EXTERNAL** environnement variable at startup. Please note that your proxy will probably not be able to serve HTTPS but HTTP only. 
+  - **[Firewall and/or Proxy]** You will have to make proper configuration to open and forward the HTTP/2 on this port. To avoid using a random port at each restart, you can fix this port by using the **PYDIO_GRPC_EXTERNAL** environnement variable at startup. Your proxy will probably not be able to serve HTTPS but HTTP only. 
 
 The various cases are summarized in the figure below.
 
@@ -96,9 +101,8 @@ Select the target Path for the local folder (a default location should be create
 ## C - CellsSync Known Issues
 
 - On MacOS, once enabled, you cannot disable the "Run At Startup" option from the app. You have to remove the service by running `/Applications/CellsSync/Contents/MacOS/cells-sync service uninstall`command.
-- Conflicts (parallel modifications of a same file on both endpoints) may still be buggy
 - The "Stop" button is sometimes not working as it should
-- MacOS ".keynote" files may be buggy as well, especially if you are migrating them from an old version of Keynote (stored as a folder) to a newer version (stored as file). Saving the file to a new name should make the process easier.
+- MacOS ".keynote" files may be buggy, especially if you are migrating them from an old version of Keynote (stored as a folder) to a newer version (stored as file). Saving the file to a new name should make the process easier.
 
 ------
 
