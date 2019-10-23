@@ -106,21 +106,27 @@ Select the target Path for the local folder (a default location should be create
 
 ------
 
-## D - Testing instructions
+## D - Testing / Reporting Bugs
 
 The Sync library has been already thoroughly tested, especially with a big amount of files and folders. But of course there might still be some glitches. Please make sure to backup everything before starting syncing! We don't want you to loose any data...
 
-### CellsServer
+Please use Github issues under https://github.com/pydio/cells-sync/issues. Make sure to always provide as much info as possible about your setup:
+
+- CellsSync version
+- Desktop OS and version
+- Cells Server version 
+- Scenario of what went wrong, sample files that create problem, etc..
+- CellsSync && CellsServer logs if possible (see below)
+
+### Cells Server Logs
 
 As before, the logs are located under %APPLICATION_DATA%/logs. 
 
 - On windows, %APPLICATION_DATA% = `C:\Users\%username%\AppData\Roaming\Pydio\cells`
 - On Linux %APPLICATION_DATA% = `/home/%username%/.config/pydio/cells`
-- On Mac %APPLICATION_DATA% = `/Users/%username%/Library/Application Support/Pydio/cell`s
+- On Mac %APPLICATION_DATA% = `/Users/%username%/Library/Application Support/Pydio/cell`s 
 
-Please send us the log along with all info you can gather on your system in case of bugs. 
-
-### CellsSync
+### CellsSync Logs
 
 Same as Cells server, the logs are located under %APPLICATION_DATA%/logs. 
 
